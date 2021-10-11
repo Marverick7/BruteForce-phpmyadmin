@@ -4,8 +4,6 @@
 # 方式一：发送post请求，获取响应
 import html
 from concurrent.futures.thread import ThreadPoolExecutor
-from typing import TextIO
-
 import requests
 import time
 import urllib3
