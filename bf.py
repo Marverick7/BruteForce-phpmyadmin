@@ -70,7 +70,7 @@ def bf(url):  # 爆破模块
     try:
         # 获取token
         response = ss.get(url, verify=False)
-        if (response.status_code == 403):
+        if response.status_code == 403:
             print("403")
             return
         html1 = response.content.decode('utf-8')
@@ -110,9 +110,9 @@ if __name__ == "__main__":
         for url in f:
             url = url.strip()
             testResult = test_url(url)
-            if (testResult == "Success"):
+            if testResult == "Success":
                 urls_success.append(url)
-            elif (testResult == "WAF"):
+            elif testResult == "WAF":
                 urls_waf.append(url)
             else:
                 urls_fail.append(url)
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         print('\n'.join(urls_fail))
 
         print("press any key to continue, but 'q' to quit")
-        if (input() == "q"):
+        if input() == "q":
             quit()
         print("正在准备爆破...")
 

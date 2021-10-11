@@ -11,11 +11,11 @@ urllib3.disable_warnings()
 
 def recheck(url, username, password):
     chrome_options = Options()
-    # chrome_options.add_argument('--headless')  # 启用headless模式
-    # chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument('--disable-infobars')
-    chrome_options.add_argument('--ignore-certificate-errors')
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    chrome_options.add_argument('--headless')  # 启用headless模式，不显示浏览器界面
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-automation',
+                                                               'enable-logging'])  # 去除“chrome正受到自动测试软件的控制”提示,去除chromedriver的日志打印
+    chrome_options.add_argument('--ignore-certificate-errors')  # 消除“不是私密连接”错误
     browser = webdriver.Chrome(options=chrome_options)
     browser.get(url)
     user_tag = browser.find_element_by_name("pma_username")
@@ -39,6 +39,6 @@ def recheck(url, username, password):
 pool = ThreadPoolExecutor(max_workers=1)  # 设置线程池大小
 
 if __name__ == '__main__':
-    for line in open("recheck.txt", "r", encoding='utf-8'):
+    for line in open("recheck.txt"):
         url, username, password = line.strip().split("  |  ")
         pool.submit(recheck, url, username, password)
